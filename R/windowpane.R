@@ -19,7 +19,11 @@
 #'
 #' @return A data frame with the calculated summary values for each window.
 #'
-#' @import tidyr
+#' @importFrom tidyr unite pivot_wider
+#' @importFrom dplyr mutate group_by summarize ungroup as_tibble select everything filter distinct pull bind_rows bind_cols rename_with across all_of
+#' @importFrom rlang enquo !! as_label
+#' @importFrom magrittr %>%
+#' @importFrom tibble tibble
 #' @export
 #' @family Disease modeling
 windowpane <- function(data,
@@ -32,14 +36,13 @@ windowpane <- function(data,
                        direction = "backward",
                        group_by_cols = NULL,
                        date_format = "%Y-%m-%d") {
-
   # Convert columns to symbols for tidy evaluation
   end_date_col <- enquo(end_date_col)
   date_col <- enquo(date_col)
   variable <- enquo(variable)
 
   # Prepare data and convert date columns
-  data <- data %>%
+  data <- tibble::as_tibble(data) %>%
     mutate(
       {{ date_col }} := as.Date(as.character({{ date_col }}), format = date_format),
       {{ end_date_col }} := as.Date(as.character({{ end_date_col }}), format = date_format)
@@ -54,7 +57,7 @@ windowpane <- function(data,
 
   # Get unique combinations of grouping variables and end_date_col
   unique_combinations <- grouped_data %>%
-    distinct(across(c(group_by_cols, !!end_date_col))) %>%
+    distinct(across(c(dplyr::any_of(group_by_cols), !!end_date_col))) %>%
     ungroup()
 
   results_list <- list()
@@ -68,10 +71,10 @@ windowpane <- function(data,
     subset_data <- data
     if (!is.null(group_by_cols)) {
       for (col in group_by_cols) {
-        subset_data <- subset_data %>% filter(.data[[col]] == current_group[[col]])
+        subset_data <- subset_data %>% dplyr::filter(.data[[col]] == current_group[[col]])
       }
     }
-    subset_data <- subset_data %>% filter((!!end_date_col) == end_date)
+    subset_data <- subset_data %>% dplyr::filter((!!end_date_col) == end_date)
 
     start_date <- end_date - max(window_lengths)
 
@@ -93,11 +96,10 @@ windowpane <- function(data,
 
           # Filter data for the current window
           window_data <- subset_data %>%
-            filter((!!date_col) >= window_start_date & (!!date_col) <= window_end_date)
+            dplyr::filter((!!date_col) >= window_start_date & (!!date_col) <= window_end_date)
 
           # Calculate summary value
-          value <- switch(
-            summary_type,
+          value <- switch(summary_type,
             "mean" = mean(pull(window_data, !!variable), na.rm = TRUE),
             "sum" = sum(pull(window_data, !!variable), na.rm = TRUE),
             "above_threshold" = if (!is.null(threshold)) sum(pull(window_data, !!variable) > threshold, na.rm = TRUE),
@@ -142,11 +144,10 @@ windowpane <- function(data,
 
           # Filter data for the current window
           window_data <- subset_data %>%
-            filter((!!date_col) >= window_start_date & (!!date_col) <= window_end_date)
+            dplyr::filter((!!date_col) >= window_start_date & (!!date_col) <= window_end_date)
 
           # Calculate summary value
-          value <- switch(
-            summary_type,
+          value <- switch(summary_type,
             "mean" = mean(pull(window_data, !!variable), na.rm = TRUE),
             "sum" = sum(pull(window_data, !!variable), na.rm = TRUE),
             "above_threshold" = if (!is.null(threshold)) sum(pull(window_data, !!variable) > threshold, na.rm = TRUE),

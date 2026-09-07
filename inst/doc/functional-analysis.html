@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Functional analysis of plant disease progress curves</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Functional analysis of plant disease
+progress curves</h1>
+
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In plant disease epidemiology, temporal disease progress data are
+frequently condensed into single scalar summaries such as final severity
+or the Area Under the Disease Progress Curve (AUDPC). While convenient,
+these scalar reductions collapse the temporal dimension, discarding
+critical information about epidemic onset, peak progress rates,
+acceleration phases, and trajectory shapes.</p>
+<p>The <code>{r4pde}</code> functional analysis framework treats disease
+progress curves as continuous functional data modeled via Generalized
+Additive Models (GAMs). This modular API enables researchers to fit
+smoothed trajectories, compute instantaneous rates of progress, measure
+whole-curve distances, perform functional PCA, quantify resistance
+indices, and evaluate environmental stability:</p>
+<pre class="text"><code>observations (time, response, treatment, block/env)
+    │
+    ▼
+functional_curves()
+    │
+    ├──► functional_rate()         (instantaneous velocity &amp; rate phenotypes)
+    │
+    ├──► functional_distances()    (pairwise curve distances &amp; clustering)
+    │
+    ├──► functional_pca()          (orthogonal modes of trajectory variation)
+    │
+    ├──► functional_resistance()   (Functional Resistance Index &amp; ranking)
+    │
+    └──► functional_instability()  (genotype-by-environment trajectory stability)</code></pre>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(r4pde)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+</div>
+<div id="example-data-soybean-bud-blight" class="section level2">
+<h2>Example Data: Soybean Bud Blight</h2>
+<p>To demonstrate this workflow, we use the package dataset
+<code>BudBlightSoybean</code>, which tracks bud blight incidence across
+4 planting dates (<code>PD1</code> to <code>PD4</code>) evaluated at
+four assessment dates (30, 40, 50, and 60 days after planting) across 4
+randomized blocks:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;BudBlightSoybean&quot;</span>, <span class="at">package =</span> <span class="st">&quot;r4pde&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">head</span>(BudBlightSoybean)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;   treat  time block     y</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; 1 PD1      30     1  0.1 </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; 2 PD1      30     2  0.3 </span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 3 PD1      30     3  0.1 </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; 4 PD1      30     4  0.1 </span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; 5 PD1      40     1  0.3 </span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; 6 PD1      40     2  0.38</span></span></code></pre></div>
+<hr />
+</div>
+<div id="fitting-disease-progress-curves-functional_curves" class="section level2">
+<h2>1. Fitting Disease Progress Curves:
+<code>functional_curves()</code></h2>
+<p><strong>Scientific question:</strong> <em>What are the continuous
+mean epidemic trajectories for each treatment over time, after
+accounting for experimental design structures such as blocking?</em></p>
+<p><code>functional_curves()</code> uses penalized splines in a GAM
+framework (via <code>mgcv</code>) to estimate smooth, environment- and
+design-adjusted trajectories without forcing the data into restrictive
+parametric shapes (e.g., strictly logistic or Gompertz):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>fc <span class="ot">&lt;-</span> <span class="fu">functional_curves</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  <span class="at">data =</span> BudBlightSoybean,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">time =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">response =</span> <span class="st">&quot;y&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">treatment =</span> <span class="st">&quot;treat&quot;</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">block =</span> <span class="st">&quot;block&quot;</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">min_points =</span> <span class="dv">3</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">family_try =</span> <span class="st">&quot;quasibinomial&quot;</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  <span class="at">show_progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co"># Plot fitted mean curves</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="fu">plot</span>(fc)</span></code></pre></div>
+<p><img role="img" aria-label="Fitted mean disease progress curves over time for soybean bud blight treatments" src="data:image/png;base64,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" alt="Fitted mean disease progress curves over time for soybean bud blight treatments" style="display: block; margin: auto;" /></p>
+<p>The fitted object <code>fc</code> contains the underlying GAM model,
+the predicted curves over a dense time grid, and model diagnostics.</p>
+<hr />
+</div>
+<div id="instantaneous-velocity-and-growth-phenotypes-functional_rate" class="section level2">
+<h2>2. Instantaneous Velocity and Growth Phenotypes:
+<code>functional_rate()</code></h2>
+<p><strong>Scientific question:</strong> <em>At what instantaneous rate
+is the epidemic progressing at any given point in time, when does
+maximum velocity occur (<span class="math inline">\(t_{r_{\max}}\)</span>), and how long does the
+active epidemic growth window last?</em></p>
+<p><code>functional_rate()</code> estimates the first temporal
+derivative <span class="math inline">\(S&#39;(t) =
+\frac{dS(t)}{dt}\)</span> directly from the fitted GAM linear predictor
+matrix, propagating model covariance to compute pointwise confidence
+intervals and extracting key rate phenotypes:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>fr <span class="ot">&lt;-</span> <span class="fu">functional_rate</span>(fc, <span class="at">scale =</span> <span class="st">&quot;response&quot;</span>, <span class="at">n_grid =</span> <span class="dv">100</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># Summary of rate phenotypes (r_max, t_r_max, growth duration)</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">summary</span>(fr)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 10</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;   treat  r_max t_r_max  r_mean r_mean_positive t_growth_start t_growth_end</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 1 PD1   0.0220    37.6 0.0133          0.0133              30         60  </span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 2 PD2   0.0225    38.5 0.0125          0.0141              30         56.7</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 3 PD3   0.0190    39.4 0.0112          0.0111              30         60  </span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 4 PD4   0.0108    45.2 0.00883         0.00880             30         60  </span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; # ℹ 3 more variables: growth_duration &lt;dbl&gt;, cumulative_positive_growth &lt;dbl&gt;,</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; #   n_growth_windows &lt;int&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co"># Visualize instantaneous progress rates over time</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="fu">plot</span>(fr)</span></code></pre></div>
+<p><img role="img" aria-label="Instantaneous rate of disease progress and velocity phenotypes across treatments" src="data:image/png;base64,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" alt="Instantaneous rate of disease progress and velocity phenotypes across treatments" style="display: block; margin: auto;" /></p>
+<p>Unlike finite differences on raw observations,
+<code>functional_rate()</code> provides smooth derivatives with rigorous
+uncertainty estimation, revealing whether treatments delay onset, reduce
+peak velocity, or shorten the active epidemic duration.</p>
+<hr />
+</div>
+<div id="whole-trajectory-distances-and-clustering-functional_distances" class="section level2">
+<h2>3. Whole-Trajectory Distances and Clustering:
+<code>functional_distances()</code></h2>
+<p><strong>Scientific question:</strong> <em>How different are
+treatments across the entire continuous temporal domain, and which
+treatments form cohesive clusters of epidemic behavior?</em></p>
+<p><code>functional_distances()</code> calculates <span class="math inline">\(L_2\)</span> functional distances by integrating
+squared differences between fitted curves across the shared time
+domain:</p>
+<p><span class="math display">\[D_{ij} = \sqrt{\int_T (f_i(t) -
+f_j(t))^2 dt}\]</span></p>
+<p>It performs hierarchical clustering and profile identification:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>fd <span class="ot">&lt;-</span> <span class="fu">functional_distances</span>(fc, <span class="at">cluster_k =</span> <span class="dv">2</span>, <span class="at">show_progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># Plot environment-adjusted curves colored by functional cluster</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="fu">plot_curves</span>(fd)</span></code></pre></div>
+<p><img role="img" aria-label="Adjusted functional curves colored by functional cluster" src="data:image/png;base64,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" alt="Adjusted functional curves colored by functional cluster" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="co"># Plot hierarchical clustering dendrogram</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">plot_dendrogram</span>(fd)</span></code></pre></div>
+<p><img role="img" aria-label="Hierarchical clustering dendrogram based on L2 functional distances" src="data:image/png;base64,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" alt="Hierarchical clustering dendrogram based on L2 functional distances" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+<div id="orthogonal-trajectory-decomposition-functional_pca" class="section level2">
+<h2>4. Orthogonal Trajectory Decomposition:
+<code>functional_pca()</code></h2>
+<p><strong>Scientific question:</strong> <em>What are the dominant modes
+of variation that distinguish epidemic curves across
+treatments?</em></p>
+<p>Functional Principal Component Analysis (FPCA) decomposes variation
+among epidemic trajectories into orthogonal temporal components
+(eigenfunctions), allowing researchers to differentiate between overall
+epidemic magnitude and timing/shape shifts:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Retain 2 components for score biplot</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>fpca <span class="ot">&lt;-</span> <span class="fu">functional_pca</span>(fc, <span class="at">n_components =</span> <span class="dv">2</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Print variance explained by the functional principal components</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">print</span>(fpca)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; A functional_pca object</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; Number of curves: 4 </span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; Number of time points: 140 </span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; Number of retained FPCs: 2 </span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="co">#&gt; Variance Explained:</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt;   FPC   prop_var cum_var</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co">#&gt; 1 FPC1   0.996     0.996</span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; 2 FPC2   0.00437   1.000</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co"># Biplot of treatments in FPCA score space</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="fu">plot</span>(fpca, <span class="at">type =</span> <span class="st">&quot;scores&quot;</span>)</span></code></pre></div>
+<p><img role="img" aria-label="Biplot of treatment trajectories in functional principal component score space" src="data:image/png;base64,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" alt="Biplot of treatment trajectories in functional principal component score space" style="display: block; margin: auto;" /></p>
+<hr />
+</div>
+<div id="functional-resistance-profiling-functional_resistance" class="section level2">
+<h2>5. Functional Resistance Profiling:
+<code>functional_resistance()</code></h2>
+<p><strong>Scientific question:</strong> <em>How do treatments rank in
+functional disease suppression relative to a susceptible reference, and
+are differences statistically supported?</em></p>
+<p><code>functional_resistance()</code> computes the Functional
+Resistance Index (FRI) and Stability-Adjusted FRI (SAFRI) by
+benchmarking each curve’s integral against a designated susceptible
+check:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Using &#39;PD1&#39; as the reference susceptible treatment</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>fres <span class="ot">&lt;-</span> <span class="fu">functional_resistance</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  fc,</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>  <span class="at">reference =</span> <span class="st">&quot;PD1&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  <span class="at">group_method =</span> <span class="st">&quot;quantile&quot;</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="at">n_groups =</span> <span class="dv">2</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co"># View resistance scores and rankings</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>fres<span class="sc">$</span>table</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt;   treat   FRI SAFRI rank_global resistance_class</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;int&gt; &lt;fct&gt;           </span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 1 PD4    7.37  7.37           1 Class 1         </span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 2 PD3    3.59  3.59           2 Class 1         </span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 3 PD2    1.68  1.68           3 Class 2         </span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; 4 PD1    0     0              4 Class 2</span></span></code></pre></div>
+<hr />
+</div>
+<div id="environmental-instability-functional_instability" class="section level2">
+<h2>6. Environmental Instability:
+<code>functional_instability()</code></h2>
+<p><strong>Scientific question:</strong> <em>When multi-environment
+trials (locations, years) are available, which genotypes exhibit stable
+epidemic suppression versus high genotype-by-environment
+variability?</em></p>
+<p>When epidemics are monitored across multiple locations or seasons
+(using the <code>environment</code> parameter in
+<code>functional_curves()</code>), <code>functional_instability()</code>
+computes Normalized Functional Instability (NFI):</p>
+<p><span class="math display">\[nFI_g = \frac{\frac{1}{E_g}
+\sum_{e=1}^{E_g} \int_T (f_{ge}(t) - \bar{f}_g(t))^2 dt}{\int_T
+\bar{f}_g(t)^2 dt}\]</span></p>
+<p>It can also decompose instability into spatial (location-driven) and
+temporal (year-to-year) components via <code>env_sep</code>.</p>
+<hr />
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>The <code>{r4pde}</code> functional analysis API provides a coherent,
+principled alternative to scalar disease metrics. By chaining modular
+functions:</p>
+<p><span class="math display">\[\text{data}
+\xrightarrow{\texttt{functional\_curves()}} \begin{cases}
+\xrightarrow{\texttt{functional\_rate()}} \text{rate phenotypes &amp;
+derivatives} \\
+\xrightarrow{\texttt{functional\_distances()}} \text{hierarchical curve
+clustering} \\
+\xrightarrow{\texttt{functional\_pca()}} \text{dominant trajectory
+modes} \\
+\xrightarrow{\texttt{functional\_resistance()}} \text{standardized
+resistance ranking} \\
+\xrightarrow{\texttt{functional\_instability()}} \text{G}\times\text{E
+stability decomposition}
+\end{cases}\]</span></p>
+<p>researchers gain deep insight into epidemic dynamics, treatment
+efficacy, and host resistance.</p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
