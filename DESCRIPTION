@@ -1,12 +1,12 @@
 Package: r4pde
 Type: Package
 Title: Tools for Quantitative Plant Disease Epidemiology
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: 
     person(given = "Emerson", family = "Del Ponte", email = "delponte@ufv.br", 
            role = c("aut", "cre"), comment = c(ORCID = "0000-0003-4398-409X"))
 Description: Tools for quantitative plant disease epidemiology, including functional analysis
-    of disease progress curves, spatial epidemiology, disease quantification,
+    of disease progress curves, spatial epidemiology, disease quantification (including the validation of standard area diagrams),
     and weather-driven epidemic analysis. The package also serves as an educational
     resource and companion to the book "R for Plant Disease Epidemiology" (R4PDE).
     Several functions are based on classical and contemporary methods, including those
@@ -14,10 +14,11 @@ Description: Tools for quantitative plant disease epidemiology, including functi
 License: MIT + file LICENSE
 Depends: R (>= 4.1.0)
 Imports: boot, car, cluster, dplyr, ggplot2, igraph, lubridate, mgcv,
-        magrittr, nasapower, progress, purrr, rlang, stats, survival,
-        tidyr, tibble, httr, jsonlite, terra
-Suggests: interval, testthat, knitr, rmarkdown, ggdendro, patchwork,
-        cowplot, ncdf4, ggrepel
+        magrittr, nasapower, progress, purrr, rlang, parallel, stats,
+        utils, survival, tidyr, tibble, httr, jsonlite
+Suggests: interval, terra, epiR, testthat, knitr, rmarkdown, ggdendro,
+        patchwork, cowplot, ncdf4, ggrepel, glmmTMB, emmeans, lmerTest,
+        multcompView, MASS, ggridges
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
@@ -27,9 +28,9 @@ BugReports: https://github.com/emdelponte/r4pde/issues
 URL: https://emdelponte.github.io/r4pde/,
         https://github.com/emdelponte/r4pde
 NeedsCompilation: no
-Packaged: 2026-09-07 17:21:42 UTC; edelp
+Packaged: 2026-11-11 18:00:55 UTC; emersondelponte
 Author: Emerson Del Ponte [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-4398-409X>)
 Maintainer: Emerson Del Ponte <delponte@ufv.br>
 Repository: CRAN
-Date/Publication: 2026-09-07 17:50:02 UTC
+Date/Publication: 2026-11-11 18:30:02 UTC
